@@ -1,5 +1,4 @@
 /**
- * 
  * Main Entry Point for the Java application.
  */
 
@@ -114,7 +113,6 @@ public class Window {
 				p2X = p1X;
 				p2Y = p1Y;
 			}
-			
 			
 		}
 		
