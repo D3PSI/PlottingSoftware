@@ -20,11 +20,11 @@ public class Window {
 	
 	public static JFrame frame;
 	public static final String TITLE	= "PlottingSoftware by D3PSI";
-	public static int SCR_WIDTH			= 1024;
-	public static int SCR_HEIGHT		= 768;
+	public static int SCR_WIDTH			= 1030;
+	public static int SCR_HEIGHT		= 770;
 	
 	public static final int X_SCALE = 100;
-	public static final int Y_SCALE = 1;
+	public static final int Y_SCALE = 100;
 	
 	public Window() {
 		
@@ -101,14 +101,37 @@ public class Window {
 			g.drawLine(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT);
 			g.drawLine(0, SCR_HEIGHT / 2, SCR_WIDTH, SCR_HEIGHT / 2);
 			
+			/*
+			 * X-AXIS
+			 */
+			for(int i = 0; i < SCR_WIDTH; i += X_SCALE) {
+				
+				g.drawLine(i + SCR_WIDTH / 2, SCR_HEIGHT / 2 + 5, i + SCR_WIDTH / 2, SCR_HEIGHT / 2 - 5);
+				g.drawLine(-i + SCR_WIDTH / 2, SCR_HEIGHT / 2 + 5, -i + SCR_WIDTH / 2, SCR_HEIGHT / 2 - 5);
+				
+			}
+			
+			/*
+			 * Y-AXIS
+			 */
+			for(int i = 0; i < SCR_HEIGHT; i += Y_SCALE) {
+				
+				g.drawLine(SCR_WIDTH / 2 + 5, i + SCR_HEIGHT / 2, SCR_WIDTH / 2 - 5, i + SCR_HEIGHT / 2);
+				g.drawLine(SCR_WIDTH / 2 + 5, -i + SCR_HEIGHT / 2, SCR_WIDTH / 2 - 5, -i + SCR_HEIGHT / 2);
+				
+			}
+			
 			g.setColor(Color.RED);
 			
-			for(double x = -1000; x < 1000; x += 0.001) {
-				double value = Math.pow(x, 2) + 10 * Math.pow(x, 3);
-				p1X = x * X_SCALE + SCR_WIDTH / 2;
+			/*
+			 * Plotting-action
+			 */
+			for(double x = -X_SCALE; x < X_SCALE; x += 0.001) {
+				double value = Math.pow(x, 2) + 1;
+				p1X = x * X_SCALE+ SCR_WIDTH / 2;
 				p1Y = -(value * Y_SCALE - SCR_HEIGHT / 2);
 				
-				g.drawLine((int) p2X, (int) p2Y, (int) p1X, (int) p1Y);
+				g.drawLine((int) p1X, (int) p1Y, (int) p2X, (int) p2Y);
 				
 				p2X = p1X;
 				p2Y = p1Y;
