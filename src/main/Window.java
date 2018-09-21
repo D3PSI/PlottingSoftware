@@ -6,6 +6,7 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
@@ -20,11 +21,11 @@ public class Window {
 	
 	public static JFrame frame;
 	public static final String TITLE	= "PlottingSoftware by D3PSI";
-	public static int SCR_WIDTH			= 1030;
-	public static int SCR_HEIGHT		= 770;
+	public static int SCR_WIDTH			= 1920;
+	public static int SCR_HEIGHT		= 1080;
 	
-	public static final int X_SCALE = 100;
-	public static final int Y_SCALE = 100;
+	public static final int X_SCALE 	= 100;
+	public static final int Y_SCALE		= 100;
 	
 	public Window() {
 		
@@ -35,7 +36,9 @@ public class Window {
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setIconImage(icon.getImage());
 		frame.setPreferredSize(frame.getSize());
-		frame.add(new Graph(frame.getSize()));
+		
+		JPanel panel = new Graph(frame.getSize(), frame);
+		frame.add(panel);
 		frame.setBackground(Color.WHITE);
 		frame.pack();
 		frame.setVisible(true);
@@ -48,10 +51,9 @@ public class Window {
 				int width = r.width;
 				int height = r.height;
 				
-				
 				SCR_WIDTH = width;
 				SCR_HEIGHT = height;
-				frame.add(new Graph(frame.getSize()));
+				panel.setBounds(0, 0, r.width, r.height);
 				
 			}
 			
@@ -81,7 +83,7 @@ public class Window {
 		 * 
 		 * @param dimension
 		 */
-		public Graph(Dimension dimension) {
+		public Graph(Dimension dimension, Frame frame) {
 			
 			setSize(dimension);
 			setPreferredSize(dimension);
@@ -130,9 +132,9 @@ public class Window {
 					g.setColor(Color.WHITE);
 				}
 				
-				double value = Math.sin(x);
-				p1X = x * X_SCALE+ SCR_WIDTH / 2;
-				p1Y = -(value * Y_SCALE - SCR_HEIGHT / 2);
+				double y = Math.tan(x);
+				p1X = x * X_SCALE + SCR_WIDTH / 2;
+				p1Y = -(y * Y_SCALE - SCR_HEIGHT / 2);
 				
 				g.drawLine((int) p1X, (int) p1Y, (int) p2X, (int) p2Y);
 				g.setColor(Color.RED);
