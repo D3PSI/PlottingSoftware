@@ -36,6 +36,7 @@ public class Window {
 		frame.setIconImage(icon.getImage());
 		frame.setPreferredSize(frame.getSize());
 		frame.add(new Graph(frame.getSize()));
+		frame.setBackground(Color.WHITE);
 		frame.pack();
 		frame.setVisible(true);
 		
@@ -97,7 +98,7 @@ public class Window {
 			double p1Y = 0;
 			double p2X = 0;
 			double p2Y = 0;
-
+			
 			g.drawLine(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT);
 			g.drawLine(0, SCR_HEIGHT / 2, SCR_WIDTH, SCR_HEIGHT / 2);
 			
@@ -121,17 +122,20 @@ public class Window {
 				
 			}
 			
-			g.setColor(Color.RED);
-			
 			/*
 			 * Plotting-action
 			 */
-			for(double x = -X_SCALE; x < X_SCALE; x += 0.001) {
-				double value = Math.pow(x, 2) + 1;
+			for(double x = -((SCR_WIDTH / 2) / X_SCALE); x < (SCR_WIDTH / 2) / X_SCALE; x += 0.01) {
+				if(x == -((SCR_WIDTH / 2) / X_SCALE)) {
+					g.setColor(Color.WHITE);
+				}
+				
+				double value = Math.sin(x);
 				p1X = x * X_SCALE+ SCR_WIDTH / 2;
 				p1Y = -(value * Y_SCALE - SCR_HEIGHT / 2);
 				
 				g.drawLine((int) p1X, (int) p1Y, (int) p2X, (int) p2Y);
+				g.setColor(Color.RED);
 				
 				p2X = p1X;
 				p2Y = p1Y;
