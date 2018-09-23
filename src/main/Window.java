@@ -20,12 +20,13 @@ import javax.swing.WindowConstants;
 public class Window {
 	
 	public static JFrame frame;
-	public static final String TITLE	= "PlottingSoftware by D3PSI";
-	public static int SCR_WIDTH			= 1920;
-	public static int SCR_HEIGHT		= 1080;
+	public static final String TITLE			= "PlottingSoftware by D3PSI";
+	public static int SCR_WIDTH					= 1280;
+	public static int SCR_HEIGHT				= 780;
 	
-	public static final int X_SCALE 	= 100;
-	public static final int Y_SCALE		= 100;
+	public static final double G_RESOLUTION		= 0.0001;
+	public static final int X_SCALE 			= 100;
+	public static final int Y_SCALE				= 100;
 	
 	public Window() {
 		
@@ -98,8 +99,8 @@ public class Window {
 		public void paintComponent(Graphics g) {
 			double p1X = 0;	
 			double p1Y = 0;
-			double p2X = 0;
-			double p2Y = 0;
+			//double p2X = 0;
+			//double p2Y = 0;
 			
 			g.drawLine(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT);
 			g.drawLine(0, SCR_HEIGHT / 2, SCR_WIDTH, SCR_HEIGHT / 2);
@@ -127,20 +128,21 @@ public class Window {
 			/*
 			 * Plotting-action
 			 */
-			for(double x = -((SCR_WIDTH / 2) / X_SCALE); x < (SCR_WIDTH / 2) / X_SCALE; x += 0.01) {
+			for(double x = -((SCR_WIDTH / 2) / X_SCALE); x < (SCR_WIDTH / 2) / X_SCALE; x += G_RESOLUTION) {
 				if(x == -((SCR_WIDTH / 2) / X_SCALE)) {
 					g.setColor(Color.WHITE);
 				}
 				
-				double y = Math.tan(x);
+				double y = Math.atan(Math.pow(x, 2));
 				p1X = x * X_SCALE + SCR_WIDTH / 2;
 				p1Y = -(y * Y_SCALE - SCR_HEIGHT / 2);
 				
-				g.drawLine((int) p1X, (int) p1Y, (int) p2X, (int) p2Y);
+				//g.drawLine((int) p1X, (int) p1Y, (int) p2X, (int) p2Y);
+				g.drawOval((int) p1X, (int) p1Y, 1, 1);
 				g.setColor(Color.RED);
 				
-				p2X = p1X;
-				p2Y = p1Y;
+				//p2X = p1X;
+				//p2Y = p1Y;
 			}
 			
 		}
