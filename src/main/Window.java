@@ -24,6 +24,9 @@ public class Window {
 	public static int SCR_WIDTH					= 1280;
 	public static int SCR_HEIGHT				= 780;
 	
+	public static int PANEL_WIDTH 				= 3 * SCR_WIDTH / 4;
+	public static int PANEL_HEIGHT 				= SCR_HEIGHT;
+	
 	public static final double G_RESOLUTION		= 0.0001;
 	public static final int X_SCALE 			= 100;
 	public static final int Y_SCALE				= 100;
@@ -39,6 +42,7 @@ public class Window {
 		frame.setPreferredSize(frame.getSize());
 		
 		JPanel panel = new Graph(frame.getSize(), frame);
+		panel.setSize(PANEL_WIDTH, PANEL_HEIGHT);
 		frame.add(panel);
 		frame.setBackground(Color.WHITE);
 		frame.pack();
@@ -52,9 +56,11 @@ public class Window {
 				int width = r.width;
 				int height = r.height;
 				
+				PANEL_WIDTH = 3 * width / 4;
 				SCR_WIDTH = width;
+				PANEL_HEIGHT = height;
 				SCR_HEIGHT = height;
-				panel.setBounds(0, 0, r.width, r.height);
+				panel.setBounds(0, 0, r.width * 75 / 100, r.height);
 				
 			}
 			
@@ -93,57 +99,71 @@ public class Window {
 		
 		/**
 		 * 
-		 * 
 		 */
 		@Override
 		public void paintComponent(Graphics g) {
-			double p1X = 0;	
-			double p1Y = 0;
-			//double p2X = 0;
-			//double p2Y = 0;
 			
-			g.drawLine(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT);
-			g.drawLine(0, SCR_HEIGHT / 2, SCR_WIDTH, SCR_HEIGHT / 2);
+			double X = 0;	
+			double Y = 0;
+			
+			g.drawLine(PANEL_WIDTH / 2, 0, PANEL_WIDTH / 2, PANEL_HEIGHT);
+			g.drawLine(0, PANEL_HEIGHT / 2, PANEL_WIDTH, PANEL_HEIGHT / 2);
 			
 			/*
 			 * X-AXIS
 			 */
-			for(int i = 0; i < SCR_WIDTH; i += X_SCALE) {
+			for(int i = 0; i < PANEL_WIDTH; i += X_SCALE) {
 				
-				g.drawLine(i + SCR_WIDTH / 2, SCR_HEIGHT / 2 + 5, i + SCR_WIDTH / 2, SCR_HEIGHT / 2 - 5);
-				g.drawLine(-i + SCR_WIDTH / 2, SCR_HEIGHT / 2 + 5, -i + SCR_WIDTH / 2, SCR_HEIGHT / 2 - 5);
+				g.drawLine(i + PANEL_WIDTH / 2, PANEL_HEIGHT / 2 + 5, i + PANEL_WIDTH / 2, PANEL_HEIGHT / 2 - 5);
+				g.drawLine(-i + PANEL_WIDTH / 2, PANEL_HEIGHT / 2 + 5, -i + PANEL_WIDTH / 2, PANEL_HEIGHT / 2 - 5);
 				
 			}
 			
 			/*
 			 * Y-AXIS
 			 */
-			for(int i = 0; i < SCR_HEIGHT; i += Y_SCALE) {
+			for(int i = 0; i < PANEL_HEIGHT; i += Y_SCALE) {
 				
-				g.drawLine(SCR_WIDTH / 2 + 5, i + SCR_HEIGHT / 2, SCR_WIDTH / 2 - 5, i + SCR_HEIGHT / 2);
-				g.drawLine(SCR_WIDTH / 2 + 5, -i + SCR_HEIGHT / 2, SCR_WIDTH / 2 - 5, -i + SCR_HEIGHT / 2);
+				g.drawLine(PANEL_WIDTH / 2 + 5, i + PANEL_HEIGHT / 2, PANEL_WIDTH / 2 - 5, i + PANEL_HEIGHT / 2);
+				g.drawLine(PANEL_WIDTH / 2 + 5, -i + PANEL_HEIGHT / 2, PANEL_WIDTH / 2 - 5, -i + PANEL_HEIGHT / 2);
 				
 			}
 			
 			/*
 			 * Plotting-action
 			 */
-			for(double x = -((SCR_WIDTH / 2) / X_SCALE); x < (SCR_WIDTH / 2) / X_SCALE; x += G_RESOLUTION) {
-				if(x == -((SCR_WIDTH / 2) / X_SCALE)) {
+			for(double x = -((PANEL_WIDTH / 2) / X_SCALE); x < (PANEL_WIDTH / 2) / X_SCALE; x += G_RESOLUTION) {
+				
+				if(x == -((PANEL_WIDTH / 2) / X_SCALE)) {
+					
 					g.setColor(Color.WHITE);
+					
 				}
 				
-				double y = Math.atan(Math.pow(x, 2));
-				p1X = x * X_SCALE + SCR_WIDTH / 2;
-				p1Y = -(y * Y_SCALE - SCR_HEIGHT / 2);
+				double y = f(x);
+				X = x * X_SCALE + PANEL_WIDTH / 2;
+				Y = -(y * Y_SCALE - PANEL_HEIGHT / 2);
 				
-				//g.drawLine((int) p1X, (int) p1Y, (int) p2X, (int) p2Y);
-				g.drawOval((int) p1X, (int) p1Y, 1, 1);
+				g.drawOval((int) X, (int) Y, 1, 1);
 				g.setColor(Color.RED);
 				
-				//p2X = p1X;
-				//p2Y = p1Y;
 			}
+			
+		}
+		
+		public double f(double x) {
+			
+			double y = Math.atan(x);
+			NS(y);
+			return y;
+			
+		}
+		
+		public double NS(double x) {
+			
+			double X = ;
+			return X;
+			
 			
 		}
 		
