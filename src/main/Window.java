@@ -28,6 +28,9 @@ public class Window {
 	public static final int X_SCALE 			= 100;
 	public static final int Y_SCALE				= 100;
 	
+	/*
+	 * Constructor
+	 */
 	public Window() {
 		
 		ImageIcon icon = new ImageIcon("res/icon/icon.png");
@@ -63,7 +66,7 @@ public class Window {
 	}
 	
 	/**
-	 * 
+	 * MAIN ENTRY POINT
 	 * @author D3PSI
 	 *
 	 */
@@ -92,7 +95,7 @@ public class Window {
 		}
 		
 		/**
-		 * 
+		 * Plotting algorithm
 		 * 
 		 */
 		@Override
@@ -133,7 +136,7 @@ public class Window {
 					g.setColor(Color.WHITE);
 				}
 				
-				double y = Math.atan(Math.pow(x, 2));
+				double y = Math.sin(x * x);
 				p1X = x * X_SCALE + SCR_WIDTH / 2;
 				p1Y = -(y * Y_SCALE - SCR_HEIGHT / 2);
 				
