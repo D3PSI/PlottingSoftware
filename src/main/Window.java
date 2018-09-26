@@ -12,10 +12,14 @@ import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
 public class Window {
 	
@@ -38,6 +42,11 @@ public class Window {
 		
 		ImageIcon icon = new ImageIcon("res/icon/icon.png");
 		
+		Border redline = BorderFactory.createLineBorder(Color.red);
+		Border compound = null;
+		compound = BorderFactory.createCompoundBorder(redline, compound);;
+		compound = BorderFactory.createTitledBorder(compound, "title", TitledBorder.CENTER, TitledBorder.BELOW_BOTTOM);
+		
 		frame = new JFrame(TITLE);
 		frame.setSize(SCR_WIDTH, SCR_HEIGHT);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -45,6 +54,7 @@ public class Window {
 		frame.setPreferredSize(frame.getSize());
 		
 		JPanel panel = new Graph(frame.getSize(), frame);
+		panel.setBorder(compound);
 		panel.setSize(PANEL_WIDTH, PANEL_HEIGHT);
 		frame.add(panel);
 		frame.setBackground(Color.WHITE);
@@ -158,16 +168,7 @@ public class Window {
 		public double f(double x) {
 			
 			double y = Math.atan(x);
-			NS(y);
 			return y;
-			
-		}
-		
-		public double NS(double x) {
-			
-			double X = ;
-			return X;
-			
 			
 		}
 		
