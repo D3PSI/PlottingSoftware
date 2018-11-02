@@ -6,19 +6,24 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.OptionalDouble;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 public class Window {
@@ -42,10 +47,10 @@ public class Window {
 		
 		ImageIcon icon = new ImageIcon("res/icon/icon.png");
 		
-		Border redline = BorderFactory.createLineBorder(Color.red);
+		Border redline = BorderFactory.createLineBorder(Color.BLACK);
 		Border compound = null;
 		compound = BorderFactory.createCompoundBorder(redline, compound);;
-		compound = BorderFactory.createTitledBorder(compound, "title", TitledBorder.CENTER, TitledBorder.BELOW_BOTTOM);
+		compound = BorderFactory.createTitledBorder(compound, "GRAPH", TitledBorder.CENTER, TitledBorder.TOP);
 		
 		frame = new JFrame(TITLE);
 		frame.setSize(SCR_WIDTH, SCR_HEIGHT);
@@ -53,10 +58,19 @@ public class Window {
 		frame.setIconImage(icon.getImage());
 		frame.setPreferredSize(frame.getSize());
 		
-		JPanel panel = new Graph(frame.getSize(), frame);
+		JPanel panel = new Graph(frame.getSize());
+		JPanel disc = new Disc(frame.getSize());
 		panel.setBorder(compound);
-		panel.setSize(PANEL_WIDTH, PANEL_HEIGHT);
-		frame.add(panel);
+		compound = BorderFactory.createTitledBorder(compound, "DISKUSSION", TitledBorder.CENTER, TitledBorder.TOP);
+		disc.setBorder(compound);
+		JPanel container = new JPanel();
+		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
+		disc.setSize(SCR_WIDTH - PANEL_WIDTH, SCR_HEIGHT);
+		Dimension dim = new Dimension(SCR_WIDTH - PANEL_WIDTH, SCR_HEIGHT);
+		disc.setPreferredSize(dim);
+		container.add(panel);
+		container.add(disc);
+		frame.add(container);
 		frame.setBackground(Color.WHITE);
 		frame.pack();
 		frame.setVisible(true);
@@ -74,6 +88,7 @@ public class Window {
 				PANEL_HEIGHT = height;
 				SCR_HEIGHT = height;
 				panel.setBounds(0, 0, r.width * 75 / 100, r.height);
+				disc.setBounds(PANEL_WIDTH, 0, r.width * 1 / 4, r.height);
 				
 			}
 			
@@ -88,11 +103,103 @@ public class Window {
 	 */
 	public static void main(String args[]) {
 		
-		new Window();
+		Window win = new Window();
 		
 	}
 	
-	public class Graph extends JPanel {
+	public class Disc extends JPanel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6290552416021916302L;
+		
+		double nullstelle;
+		List<Double> nullstellen = new ArrayList<Double>();
+		
+		/*
+		 * 
+		 * @param dimension
+		 */
+		public Disc(Dimension dim) {
+			
+			setSize(dim);
+			setPreferredSize(dim);
+			addLabels(this);
+			
+		}
+		
+		/*
+		 * 
+		 */
+		private void addLabels(JPanel panel) {
+
+			List<Double> values = new ArrayList<Double>();	
+			OptionalDouble average;
+			
+			DecimalFormat df = new DecimalFormat("#.####");
+			df.setRoundingMode(RoundingMode.CEILING);
+			
+			for(double x = -((PANEL_WIDTH / 2) / X_SCALE) - 1; x < (PANEL_WIDTH / 2) / X_SCALE + 1; x += G_RESOLUTION / 10) {
+				
+				double y = Graph.f(x);
+				
+				if(Double.isNaN(y)) {
+					
+					continue;
+					
+				} else if(y < 0.01 && y > -0.01) {
+				
+					double val = x;
+					values.add(val);
+					
+				}else if(y == 0) {
+					
+					nullstelle = x;
+					nullstellen.add(nullstelle);
+					
+				}
+				
+			}
+			
+			List<Double> actualNullstellen = new ArrayList<Double>();
+			
+			for(int i = 0; i < values.size() - 1; i++) {
+				
+				if(values.get(i + 1) - 0.01 < values.get(i)) {
+					
+					actualNullstellen.add(values.get(i));
+					
+				}
+			
+			}
+			
+			average = actualNullstellen.stream().mapToDouble(a -> a).average();
+			if(average.isPresent())
+				nullstellen.add(average.getAsDouble());
+			
+			JLabel lbl1 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f(0)));
+			panel.add(lbl1);
+			for(int i = 0; i < nullstellen.size(); i++) {
+				JLabel lbl2 = new JLabel("Nullstellen:	x = " + df.format(nullstellen.get(i)));
+				panel.add(lbl2);
+			}
+			
+		}
+		
+		/*
+		 * 
+		 */
+		@Override
+		public void paintComponent(Graphics g) {
+			
+			
+			
+		}
+		
+	}
+	
+	public static class Graph extends JPanel {
 	
 		/**
 		 * 
@@ -103,7 +210,7 @@ public class Window {
 		 * 
 		 * @param dimension
 		 */
-		public Graph(Dimension dimension, Frame frame) {
+		public Graph(Dimension dimension) {
 			
 			setSize(dimension);
 			setPreferredSize(dimension);
@@ -146,7 +253,7 @@ public class Window {
 			/*
 			 * Plotting-action
 			 */
-			for(double x = -((PANEL_WIDTH / 2) / X_SCALE); x < (PANEL_WIDTH / 2) / X_SCALE; x += G_RESOLUTION) {
+			for(double x = -((PANEL_WIDTH / 2) / X_SCALE) - 1; x < (PANEL_WIDTH / 2) / X_SCALE + 1; x += G_RESOLUTION) {
 				
 				if(x == -((PANEL_WIDTH / 2) / X_SCALE)) {
 					
@@ -155,6 +262,13 @@ public class Window {
 				}
 				
 				double y = f(x);
+				
+				if(Double.isNaN(y)) {
+					
+					continue;
+					
+				}
+				
 				X = x * X_SCALE + PANEL_WIDTH / 2;
 				Y = -(y * Y_SCALE - PANEL_HEIGHT / 2);
 				
@@ -165,9 +279,9 @@ public class Window {
 			
 		}
 		
-		public double f(double x) {
+		public static double f(double x) {
 			
-			double y = Math.atan(x);
+			double y = 2*x*x - 2;
 			return y;
 			
 		}
