@@ -4,12 +4,20 @@
 
 package main;
 
+import java.awt.AWTException;
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -17,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -27,8 +36,12 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-public class Window {
+public class Window extends JFrame{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -498460634305555226L;
 	public static JFrame frame;
 	public static final String TITLE			= "PlottingSoftware by D3PSI";
 	public static int SCR_WIDTH					= 1280;
@@ -69,6 +82,45 @@ public class Window {
 		disc.setSize(SCR_WIDTH - PANEL_WIDTH, SCR_HEIGHT);
 		Dimension dim = new Dimension(SCR_WIDTH - PANEL_WIDTH, SCR_HEIGHT);
 		disc.setPreferredSize(dim);
+		JPanel buttons = new JPanel();
+		buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
+		Button graphspeichern = new Button("Graph speichern");
+		Button allesspeichern = new Button("Alles speichern");
+		graphspeichern.addActionListener(new ActionListener(){
+			
+			public void actionPerformed(ActionEvent e) {
+			
+				try {
+					
+					screenshot();
+					
+				} catch (InterruptedException e1) {
+					
+					e1.printStackTrace();
+					
+				}
+		
+			}
+		});
+		allesspeichern.addActionListener(new ActionListener(){
+			
+			public void actionPerformed(ActionEvent e) {
+			
+				try {
+					
+					screenshotAll();
+					
+				} catch (InterruptedException e1) {
+					
+					e1.printStackTrace();
+					
+				}
+		
+			}
+		});
+		buttons.add(graphspeichern);
+		buttons.add(allesspeichern);
+		disc.add(buttons);
 		container.add(panel);
 		container.add(disc);
 		frame.add(container);
@@ -94,6 +146,46 @@ public class Window {
 			}
 			
 		});
+		
+	}
+	
+	public void screenshot() throws InterruptedException {
+		
+		try {
+			
+	         Robot robot = new Robot();
+	         String fileName = "screenshot.jpg";
+	 
+	         Rectangle screenRect = new Rectangle(frame.getLocationOnScreen().x + 12, frame.getLocationOnScreen().y + 35, PANEL_WIDTH - 12, PANEL_HEIGHT - 50);
+	         BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
+	         
+	         ImageIO.write(screenFullImage, "jpg", new File(fileName));
+	         
+	      } catch (AWTException | IOException ex) {
+	    	  
+	               System.err.println(ex);
+	      
+	      }
+		
+	}
+	
+	public void screenshotAll() throws InterruptedException {
+		
+		try {
+			
+	         Robot robot = new Robot();
+	         String fileName = "screenshotAll.jpg";
+	 
+	         Rectangle screenRect = new Rectangle(frame.getLocationOnScreen().x + 12, frame.getLocationOnScreen().y + 35, SCR_WIDTH - 18, SCR_HEIGHT - 50);
+	         BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
+	         
+	         ImageIO.write(screenFullImage, "jpg", new File(fileName));
+	         
+	      } catch (AWTException | IOException ex) {
+	    	  
+	               System.err.println(ex);
+	      
+	      }
 		
 	}
 	
@@ -147,7 +239,7 @@ public class Window {
 					
 					continue;
 					
-				} else if(y <0.00001 && y > -0.00001) {
+				} else if(y < 0.00001 && y > -0.00001) {
 				
 					nullstelle = x;
 					nullstellen.add(Double.parseDouble(df.format(nullstelle)));
@@ -269,7 +361,7 @@ public class Window {
 		
 		public static double f(double x) {
 			
-			double y = 2*x*x*x*x - 1000;
+			double y = Math.pow(2.714, x);
 			return y;
 			
 		}
