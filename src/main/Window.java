@@ -5,10 +5,13 @@
 package main;
 
 import java.awt.AWTException;
+import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
@@ -44,15 +47,15 @@ public class Window extends JFrame{
 	private static final long serialVersionUID = -498460634305555226L;
 	public static JFrame frame;
 	public static final String TITLE			= "PlottingSoftware by D3PSI";
-	public static int SCR_WIDTH					= 1280;
+	public static int SCR_WIDTH					= 1600;
 	public static int SCR_HEIGHT				= 780;
 	
 	public static int PANEL_WIDTH 				= 3 * SCR_WIDTH / 4;
 	public static int PANEL_HEIGHT 				= SCR_HEIGHT;
 	
 	public static final double G_RESOLUTION		= 0.00001;
-	public static final int X_SCALE 			= 100;
-	public static final int Y_SCALE				= 100;
+	public static final int X_SCALE 			= 50;
+	public static final int Y_SCALE				= 50;
 	
 	/*
 	 * Constructor
@@ -79,8 +82,8 @@ public class Window extends JFrame{
 		disc.setBorder(compound);
 		JPanel container = new JPanel();
 		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
-		disc.setSize(SCR_WIDTH - PANEL_WIDTH, SCR_HEIGHT);
-		Dimension dim = new Dimension(SCR_WIDTH - PANEL_WIDTH, SCR_HEIGHT);
+		disc.setSize((SCR_WIDTH - PANEL_WIDTH) - 130, SCR_HEIGHT);
+		Dimension dim = new Dimension((SCR_WIDTH - PANEL_WIDTH) - 130, SCR_HEIGHT);
 		disc.setPreferredSize(dim);
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
@@ -120,9 +123,9 @@ public class Window extends JFrame{
 		});
 		buttons.add(graphspeichern);
 		buttons.add(allesspeichern);
-		disc.add(buttons);
 		container.add(panel);
 		container.add(disc);
+		container.add(buttons);
 		frame.add(container);
 		frame.setBackground(Color.WHITE);
 		frame.pack();
@@ -141,7 +144,7 @@ public class Window extends JFrame{
 				PANEL_HEIGHT = height;
 				SCR_HEIGHT = height;
 				panel.setBounds(0, 0, r.width * 75 / 100, r.height);
-				disc.setBounds(PANEL_WIDTH, 0, r.width * 1 / 4, r.height);
+				disc.setBounds(PANEL_WIDTH, 0, (r.width * 1 / 4) - 130, r.height);
 				
 			}
 			
@@ -154,9 +157,9 @@ public class Window extends JFrame{
 		try {
 			
 	         Robot robot = new Robot();
-	         String fileName = "screenshot.jpg";
+	         String fileName = "graph.jpg";
 	 
-	         Rectangle screenRect = new Rectangle(frame.getLocationOnScreen().x + 12, frame.getLocationOnScreen().y + 35, PANEL_WIDTH - 12, PANEL_HEIGHT - 50);
+	         Rectangle screenRect = new Rectangle(frame.getLocationOnScreen().x + 8, frame.getLocationOnScreen().y + 31, PANEL_WIDTH, PANEL_HEIGHT - 50);
 	         BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
 	         
 	         ImageIO.write(screenFullImage, "jpg", new File(fileName));
@@ -174,9 +177,9 @@ public class Window extends JFrame{
 		try {
 			
 	         Robot robot = new Robot();
-	         String fileName = "screenshotAll.jpg";
+	         String fileName = "diskussion.jpg";
 	 
-	         Rectangle screenRect = new Rectangle(frame.getLocationOnScreen().x + 12, frame.getLocationOnScreen().y + 35, SCR_WIDTH - 18, SCR_HEIGHT - 50);
+	         Rectangle screenRect = new Rectangle(frame.getLocationOnScreen().x + 8, frame.getLocationOnScreen().y + 31, SCR_WIDTH - 130, SCR_HEIGHT - 50);
 	         BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
 	         
 	         ImageIO.write(screenFullImage, "jpg", new File(fileName));
