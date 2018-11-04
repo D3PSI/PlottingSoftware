@@ -103,7 +103,7 @@ public class Window {
 	 */
 	public static void main(String args[]) {
 		
-		Window win = new Window();
+		new Window();
 		
 	}
 	
@@ -125,6 +125,7 @@ public class Window {
 			
 			setSize(dim);
 			setPreferredSize(dim);
+			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 			addLabels(this);
 			
 		}
@@ -133,9 +134,6 @@ public class Window {
 		 * 
 		 */
 		private void addLabels(JPanel panel) {
-
-			List<Double> values = new ArrayList<Double>();	
-			OptionalDouble average;
 			
 			DecimalFormat df = new DecimalFormat("#.####");
 			df.setRoundingMode(RoundingMode.CEILING);
@@ -148,10 +146,10 @@ public class Window {
 					
 					continue;
 					
-				} else if(y < 0.01 && y > -0.01) {
+				} else if(y < 0.00003 && y > -0.00003) {
 				
-					double val = x;
-					values.add(val);
+					nullstelle = x;
+					nullstellen.add(x);
 					
 				}else if(y == 0) {
 					
@@ -161,22 +159,6 @@ public class Window {
 				}
 				
 			}
-			
-			List<Double> actualNullstellen = new ArrayList<Double>();
-			
-			for(int i = 0; i < values.size() - 1; i++) {
-				
-				if(values.get(i + 1) - 0.01 < values.get(i)) {
-					
-					actualNullstellen.add(values.get(i));
-					
-				}
-			
-			}
-			
-			average = actualNullstellen.stream().mapToDouble(a -> a).average();
-			if(average.isPresent())
-				nullstellen.add(average.getAsDouble());
 			
 			JLabel lbl1 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f(0)));
 			panel.add(lbl1);
@@ -281,7 +263,7 @@ public class Window {
 		
 		public static double f(double x) {
 			
-			double y = 2*x*x - 2;
+			double y = 2*x*x*x*x - 1;
 			return y;
 			
 		}
