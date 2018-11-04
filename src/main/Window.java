@@ -13,8 +13,9 @@ import java.awt.event.ComponentEvent;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.OptionalDouble;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -36,7 +37,7 @@ public class Window {
 	public static int PANEL_WIDTH 				= 3 * SCR_WIDTH / 4;
 	public static int PANEL_HEIGHT 				= SCR_HEIGHT;
 	
-	public static final double G_RESOLUTION		= 0.0001;
+	public static final double G_RESOLUTION		= 0.00001;
 	public static final int X_SCALE 			= 100;
 	public static final int Y_SCALE				= 100;
 	
@@ -138,7 +139,7 @@ public class Window {
 			DecimalFormat df = new DecimalFormat("#.####");
 			df.setRoundingMode(RoundingMode.CEILING);
 			
-			for(double x = -((PANEL_WIDTH / 2) / X_SCALE) - 1; x < (PANEL_WIDTH / 2) / X_SCALE + 1; x += G_RESOLUTION / 10) {
+			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += G_RESOLUTION / 1000) {
 				
 				double y = Graph.f(x);
 				
@@ -146,19 +147,24 @@ public class Window {
 					
 					continue;
 					
-				} else if(y < 0.00003 && y > -0.00003) {
+				} else if(y <0.00001 && y > -0.00001) {
 				
 					nullstelle = x;
-					nullstellen.add(x);
+					nullstellen.add(Double.parseDouble(df.format(nullstelle)));
 					
 				}else if(y == 0) {
 					
 					nullstelle = x;
-					nullstellen.add(nullstelle);
+					nullstellen.add(Double.parseDouble(df.format(nullstelle)));
 					
 				}
 				
 			}
+			
+			Set<Double> hs = new LinkedHashSet<>();
+			hs.addAll(nullstellen);
+			nullstellen.clear();
+			nullstellen.addAll(hs);
 			
 			JLabel lbl1 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f(0)));
 			panel.add(lbl1);
@@ -263,7 +269,7 @@ public class Window {
 		
 		public static double f(double x) {
 			
-			double y = 2*x*x*x*x - 1;
+			double y = 2*x*x*x*x - 1000;
 			return y;
 			
 		}
