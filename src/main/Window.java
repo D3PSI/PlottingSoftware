@@ -361,7 +361,7 @@ public class Window extends JFrame{
 		
 		public static double f(double x) {
 			
-			double y = Math.pow(2.714, x);
+			double y = 2*x*x*x*x - 1;
 			return y;
 			
 		}
