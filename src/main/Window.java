@@ -5,13 +5,10 @@
 package main;
 
 import java.awt.AWTException;
-import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
@@ -234,7 +231,7 @@ public class Window extends JFrame{
 			DecimalFormat df = new DecimalFormat("#.####");
 			df.setRoundingMode(RoundingMode.CEILING);
 			
-			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += G_RESOLUTION / 1000) {
+			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
 				
 				double y = Graph.f(x);
 				
@@ -264,7 +261,7 @@ public class Window extends JFrame{
 			JLabel lbl1 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f(0)));
 			panel.add(lbl1);
 			for(int i = 0; i < nullstellen.size(); i++) {
-				JLabel lbl2 = new JLabel("Nullstellen:	x = " + df.format(nullstellen.get(i)));
+				JLabel lbl2 = new JLabel("Nullstelle:	x = " + df.format(nullstellen.get(i)));
 				panel.add(lbl2);
 			}
 			
@@ -364,7 +361,7 @@ public class Window extends JFrame{
 		
 		public static double f(double x) {
 			
-			double y = 2*x*x*x*x - 1;
+			double y = Math.cos(x) / Math.sin(x);
 			return y;
 			
 		}
