@@ -50,7 +50,7 @@ public class Window extends JFrame{
 	public static int PANEL_WIDTH 				= 3 * SCR_WIDTH / 4;
 	public static int PANEL_HEIGHT 				= SCR_HEIGHT;
 	
-	public static final double G_RESOLUTION		= 0.00001;
+	public static final double G_RESOLUTION		= 0.0001;
 	public static final int X_SCALE 			= 50;
 	public static final int Y_SCALE				= 50;
 	
