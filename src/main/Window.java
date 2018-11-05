@@ -23,7 +23,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -53,6 +55,9 @@ public class Window extends JFrame{
 	public static final double G_RESOLUTION		= 0.0001;
 	public static final int X_SCALE 			= 50;
 	public static final int Y_SCALE				= 50;
+	
+	static int degree;
+	static double[] coefficients = new double[degree + 1];
 	
 	/*
 	 * Constructor
@@ -197,6 +202,7 @@ public class Window extends JFrame{
 	 */
 	public static void main(String args[]) {
 		
+		Graph.function();
 		new Window();
 		
 	}
@@ -360,9 +366,52 @@ public class Window extends JFrame{
 			
 		}
 		
+		
+		public static void function() {
+			
+			Scanner sc = new Scanner(System.in);
+			System.out.print("Enter the degree: ");
+
+			degree = sc.nextInt();
+			
+			System.out.print("Enter "+ (degree + 1) +" coefficients: ");
+
+			//double[] C = new double[degree + 1];
+			
+			for(int i = 0; i < coefficients.length; i++) {
+				
+				//C[i] = sc.nextDouble();
+				coefficients[i] = sc.nextDouble();
+			    
+			}
+
+			/*double derivative[] = new double[coefficients.length - 1];
+			
+			for(int i = 0; i < derivative.length; i++) {
+				
+			    derivative[i] = coefficients[i] * (coefficients.length - 1 -i);
+			    
+			}
+			
+			for(int k = 0; k < derivative.length; k++) {
+				
+				System.out.println(Double.toString(derivative[k]));
+				
+			}*/
+			
+			sc.close();
+			
+		}
+		
 		public static double f(double x) {
 			
-			double y = Math.cos(x);
+			double y = 0;
+			for(int i = 0; i < coefficients.length; i++) {
+				
+				y += coefficients[i] + Math.pow(x, degree - i);
+				
+			}
+			
 			return y;
 			
 		}
