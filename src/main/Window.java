@@ -25,15 +25,17 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -49,6 +51,8 @@ public class Window extends JFrame{
 	public static int SCR_WIDTH					= 1600;
 	public static int SCR_HEIGHT				= 780;
 	
+	public static JDialog getFunc;
+	
 	public static int PANEL_WIDTH 				= 3 * SCR_WIDTH / 4;
 	public static int PANEL_HEIGHT 				= SCR_HEIGHT;
 	
@@ -57,7 +61,7 @@ public class Window extends JFrame{
 	public static final int Y_SCALE				= 50;
 	
 	static int degree;
-	static double[] coefficients = new double[degree + 1];
+	static double[] coefficients;
 	
 	/*
 	 * Constructor
@@ -73,10 +77,37 @@ public class Window extends JFrame{
 		
 		frame = new JFrame(TITLE);
 		frame.setSize(SCR_WIDTH, SCR_HEIGHT);
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setIconImage(icon.getImage());
 		frame.setPreferredSize(frame.getSize());
+		
+		getFunc = new JDialog(frame, "Bitte Funktion eingeben:");
+		getFunc.setSize(500, 300);
+		getFunc.setPreferredSize(new Dimension(500, 300));
+		JPanel messagePane = new JPanel();
+		messagePane.add(new JLabel("Bitte Grad der Funktion eingeben:"));
+		JTextField deg = new JTextField();
+		getContentPane().add(messagePane);
+		JPanel buttonPane = new JPanel();
+		Button button = new Button("Ok");
+		messagePane.add(deg);
+		buttonPane.add(button);
+		getContentPane().add(buttonPane, BorderLayout.PAGE_END);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		pack();
+		setVisible(true);
+		button.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				degree = (int) Double.parseDouble(deg.getText());
+				Graph.function();
+				getFunc.dispose();
+				JDialog getFunc2 = new JDialog(frame, "Bitte Funktion eingeben:");
+			}
+			
+		});
 		
 		JPanel panel = new Graph(frame.getSize());
 		JPanel disc = new Disc(frame.getSize());
@@ -89,6 +120,8 @@ public class Window extends JFrame{
 		Dimension dim = new Dimension((SCR_WIDTH - PANEL_WIDTH) - 130, SCR_HEIGHT);
 		disc.setPreferredSize(dim);
 		JPanel buttons = new JPanel();
+		Dimension dim1 = new Dimension(100, SCR_HEIGHT);
+		buttons.setSize(dim1);
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
 		Button graphspeichern = new Button("Graph speichern");
 		Button allesspeichern = new Button("Alles speichern");
@@ -202,7 +235,6 @@ public class Window extends JFrame{
 	 */
 	public static void main(String args[]) {
 		
-		Graph.function();
 		new Window();
 		
 	}
@@ -264,7 +296,23 @@ public class Window extends JFrame{
 			hs.addAll(nullstellen);
 			nullstellen.clear();
 			nullstellen.addAll(hs);
+			StringBuilder fnctn = new StringBuilder("<html>f(x) = ");
+			for(int i = 0; i < coefficients.length; i++) {
+				fnctn.append(Double.toString(coefficients[i]) + "x" + "<sup>" + Integer.toString(degree - i) + "</sup>");
+				if(i != coefficients.length - 1) {
+					
+					fnctn.append(" + ");
+					
+				} else {
+					
+					fnctn.append("</html>");
+					
+				}
+				
+			}
 			
+			JLabel lbl = new JLabel(fnctn.toString());
+			panel.add(lbl);
 			JLabel lbl1 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f(0)));
 			panel.add(lbl1);
 			for(int i = 0; i < nullstellen.size(); i++) {
@@ -370,17 +418,13 @@ public class Window extends JFrame{
 		public static void function() {
 			
 			Scanner sc = new Scanner(System.in);
-			System.out.print("Enter the degree: ");
-
-			degree = sc.nextInt();
 			
-			System.out.print("Enter "+ (degree + 1) +" coefficients: ");
-
-			//double[] C = new double[degree + 1];
+			System.out.print("Enter "+ (degree + 1) + " coefficients: ");
+			
+			coefficients = new double[degree + 1];
 			
 			for(int i = 0; i < coefficients.length; i++) {
 				
-				//C[i] = sc.nextDouble();
 				coefficients[i] = sc.nextDouble();
 			    
 			}
@@ -405,14 +449,19 @@ public class Window extends JFrame{
 		
 		public static double f(double x) {
 			
-			double y = 0;
+			double val = 0;
+			
 			for(int i = 0; i < coefficients.length; i++) {
 				
-				y += coefficients[i] + Math.pow(x, degree - i);
+				double z;
+				
+				z = coefficients[i] * Math.pow(x, coefficients.length - i - 1);
+				
+				val += z;
 				
 			}
 			
-			return y;
+			return val;
 			
 		}
 		
