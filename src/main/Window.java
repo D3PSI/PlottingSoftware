@@ -268,7 +268,7 @@ public class Window extends JFrame{
 		 */
 		private void addLabels(JPanel panel) {
 			
-			DecimalFormat df = new DecimalFormat("#.####");
+			DecimalFormat df = new DecimalFormat("#.#####");
 			df.setRoundingMode(RoundingMode.CEILING);
 			
 			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
