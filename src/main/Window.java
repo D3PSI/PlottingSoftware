@@ -82,7 +82,7 @@ public class Window extends JFrame{
 		frame.setIconImage(icon.getImage());
 		frame.setPreferredSize(frame.getSize());
 		
-		getFunc = new JDialog(frame, "Bitte Funktion eingeben:");
+		/*getFunc = new JDialog(frame, "Bitte Funktion eingeben:");
 		getFunc.setSize(500, 300);
 		getFunc.setPreferredSize(new Dimension(500, 300));
 		JPanel messagePane = new JPanel();
@@ -107,7 +107,7 @@ public class Window extends JFrame{
 				JDialog getFunc2 = new JDialog(frame, "Bitte Funktion eingeben:");
 			}
 			
-		});
+		});*/
 		
 		JPanel panel = new Graph(frame.getSize());
 		JPanel disc = new Disc(frame.getSize());
@@ -234,7 +234,8 @@ public class Window extends JFrame{
 	 *
 	 */
 	public static void main(String args[]) {
-		
+
+		Graph.function();
 		new Window();
 		
 	}
@@ -418,6 +419,11 @@ public class Window extends JFrame{
 		public static void function() {
 			
 			Scanner sc = new Scanner(System.in);
+			
+			System.out.println("Enter degree of the function: ");
+			
+			degree = sc.nextInt();
+			
 			
 			System.out.print("Enter "+ (degree + 1) + " coefficients: ");
 			
