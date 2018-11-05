@@ -68,6 +68,7 @@ public class Window extends JFrame{
 		
 		frame = new JFrame(TITLE);
 		frame.setSize(SCR_WIDTH, SCR_HEIGHT);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setIconImage(icon.getImage());
 		frame.setPreferredSize(frame.getSize());
