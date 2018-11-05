@@ -361,7 +361,7 @@ public class Window extends JFrame{
 		
 		public static double f(double x) {
 			
-			double y = Math.cos(x) / Math.sin(x);
+			double y = Math.cos(x);
 			return y;
 			
 		}
