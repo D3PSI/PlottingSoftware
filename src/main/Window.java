@@ -29,13 +29,13 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
+//import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+//import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -62,6 +62,7 @@ public class Window extends JFrame{
 	
 	static int degree;
 	static double[] coefficients;
+	static double derivative[];
 	
 	/*
 	 * Constructor
@@ -236,6 +237,7 @@ public class Window extends JFrame{
 	public static void main(String args[]) {
 
 		Graph.function();
+		Graph.derivative();
 		new Window();
 		
 	}
@@ -249,6 +251,8 @@ public class Window extends JFrame{
 		
 		double nullstelle;
 		List<Double> nullstellen = new ArrayList<Double>();
+		List<Double> nullstellen_ableitung = new ArrayList<Double>();
+		
 		
 		/*
 		 * 
@@ -259,16 +263,17 @@ public class Window extends JFrame{
 			setSize(dim);
 			setPreferredSize(dim);
 			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-			addLabels(this);
+			function_disc(this);
+			derivative_disc(this);
 			
 		}
 		
 		/*
 		 * 
 		 */
-		private void addLabels(JPanel panel) {
+		private void function_disc(JPanel panel) {
 			
-			DecimalFormat df = new DecimalFormat("#.#####");
+			DecimalFormat df = new DecimalFormat("#.####");
 			df.setRoundingMode(RoundingMode.CEILING);
 			
 			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
@@ -323,6 +328,62 @@ public class Window extends JFrame{
 			
 		}
 		
+		private void derivative_disc(JPanel panel) {
+			DecimalFormat df = new DecimalFormat("#.####");
+			df.setRoundingMode(RoundingMode.CEILING);
+			
+			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
+				
+				double y = Graph.f_d(x);
+				
+				if(Double.isNaN(y)) {
+					
+					continue;
+					
+				} else if(y < 0.00001 && y > -0.00001) {
+				
+					nullstelle = x;
+					nullstellen_ableitung.add(Double.parseDouble(df.format(nullstelle)));
+					
+				}else if(y == 0) {
+					
+					nullstelle = x;
+					nullstellen_ableitung.add(Double.parseDouble(df.format(nullstelle)));
+					
+				}
+				
+			}
+			
+			Set<Double> hs = new LinkedHashSet<>();
+			hs.addAll(nullstellen_ableitung);
+			nullstellen_ableitung.clear();
+			nullstellen_ableitung.addAll(hs);
+			StringBuilder derivative1 = new StringBuilder("<html>f'(x) = ");
+			for(int i = 0; i < derivative.length; i++) {
+				derivative1.append(Double.toString(derivative[i]) + "x" + "<sup>" + Integer.toString(derivative.length - i) + "</sup>");
+				if(i != derivative.length - 1) {
+					
+					derivative1.append(" + ");
+					
+				} else {
+					
+					derivative1.append("</html>");
+					
+				}
+			
+			}
+
+			JLabel lb = new JLabel(derivative1.toString());
+			panel.add(lb);
+			JLabel lbl1 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f_d(0)));
+			panel.add(lbl1);
+			for(int i = 0; i < nullstellen_ableitung.size(); i++) {
+				JLabel lbl2 = new JLabel("Nullstelle:	x = " + df.format(nullstellen_ableitung.get(i)));
+				panel.add(lbl2);
+			}
+			
+		}
+		
 		/*
 		 * 
 		 */
@@ -360,9 +421,6 @@ public class Window extends JFrame{
 		@Override
 		public void paintComponent(Graphics g) {
 			
-			double X = 0;	
-			double Y = 0;
-			
 			g.drawLine(PANEL_WIDTH / 2, 0, PANEL_WIDTH / 2, PANEL_HEIGHT);
 			g.drawLine(0, PANEL_HEIGHT / 2, PANEL_WIDTH, PANEL_HEIGHT / 2);
 			
@@ -391,6 +449,9 @@ public class Window extends JFrame{
 			 */
 			for(double x = -((PANEL_WIDTH / 2) / X_SCALE) - 1; x < (PANEL_WIDTH / 2) / X_SCALE + 1; x += G_RESOLUTION) {
 				
+				double X = 0;	
+				double Y = 0;
+				
 				if(x == -((PANEL_WIDTH / 2) / X_SCALE)) {
 					
 					g.setColor(Color.WHITE);
@@ -410,6 +471,33 @@ public class Window extends JFrame{
 				
 				g.drawOval((int) X, (int) Y, 1, 1);
 				g.setColor(Color.RED);
+				
+			}
+			
+			for(double x = -((PANEL_WIDTH / 2) / X_SCALE) - 1; x < (PANEL_WIDTH / 2) / X_SCALE + 1; x += G_RESOLUTION) {
+
+				double X = 0;	
+				double Y = 0;
+				
+				if(x == -((PANEL_WIDTH / 2) / X_SCALE)) {
+					
+					g.setColor(Color.WHITE);
+					
+				}
+				
+				double y = f_d(x);
+				
+				if(Double.isNaN(y)) {
+					
+					continue;
+					
+				}
+				
+				X = x * X_SCALE + PANEL_WIDTH / 2;
+				Y = -(y * Y_SCALE - PANEL_HEIGHT / 2);
+				
+				g.drawOval((int) X, (int) Y, 1, 1);
+				g.setColor(Color.BLUE);
 				
 			}
 			
@@ -434,8 +522,14 @@ public class Window extends JFrame{
 				coefficients[i] = sc.nextDouble();
 			    
 			}
-
-			/*double derivative[] = new double[coefficients.length - 1];
+			
+			sc.close();
+			
+		}
+		
+		public static void derivative() {
+			
+			derivative = new double[coefficients.length - 1];
 			
 			for(int i = 0; i < derivative.length; i++) {
 				
@@ -443,13 +537,23 @@ public class Window extends JFrame{
 			    
 			}
 			
-			for(int k = 0; k < derivative.length; k++) {
-				
-				System.out.println(Double.toString(derivative[k]));
-				
-			}*/
+		}
+		
+		public static double f_d(double x){
 			
-			sc.close();
+			double val = 0;
+			
+			for(int i = 0; i < derivative.length; i++) {
+				
+				double z;
+				
+				z = derivative[i] * Math.pow(x, derivative.length - i - 1);
+				
+				val += z;
+				
+			}
+			
+			return val;
 			
 		}
 		
