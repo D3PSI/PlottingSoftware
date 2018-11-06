@@ -7,6 +7,7 @@ package main;
 import java.awt.AWTException;
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -58,7 +59,7 @@ public class Window extends JFrame{
 	
 	public static final double G_RESOLUTION		= 0.0001;
 	public static final int X_SCALE 			= 50;
-	public static final int Y_SCALE				= 50;
+	public static final int Y_SCALE				= 5;
 	
 	static int degree;
 	static double[] coefficients;
@@ -249,10 +250,11 @@ public class Window extends JFrame{
 		 */
 		private static final long serialVersionUID = -6290552416021916302L;
 		
+		DecimalFormat df = new DecimalFormat("#.###");
+		DecimalFormat df2 = new DecimalFormat("#.#");
 		double nullstelle;
 		List<Double> nullstellen = new ArrayList<Double>();
 		List<Double> nullstellen_ableitung = new ArrayList<Double>();
-		
 		
 		/*
 		 * 
@@ -263,45 +265,15 @@ public class Window extends JFrame{
 			setSize(dim);
 			setPreferredSize(dim);
 			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+			df.setRoundingMode(RoundingMode.CEILING);
 			function_disc(this);
 			derivative_disc(this);
+			addLabels(this);
 			
 		}
 		
-		/*
-		 * 
-		 */
-		private void function_disc(JPanel panel) {
+		private void addLabels(JPanel panel) {
 			
-			DecimalFormat df = new DecimalFormat("#.####");
-			df.setRoundingMode(RoundingMode.CEILING);
-			
-			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
-				
-				double y = Graph.f(x);
-				
-				if(Double.isNaN(y)) {
-					
-					continue;
-					
-				} else if(y < 0.00001 && y > -0.00001) {
-				
-					nullstelle = x;
-					nullstellen.add(Double.parseDouble(df.format(nullstelle)));
-					
-				}else if(y == 0) {
-					
-					nullstelle = x;
-					nullstellen.add(Double.parseDouble(df.format(nullstelle)));
-					
-				}
-				
-			}
-			
-			Set<Double> hs = new LinkedHashSet<>();
-			hs.addAll(nullstellen);
-			nullstellen.clear();
-			nullstellen.addAll(hs);
 			StringBuilder fnctn = new StringBuilder("<html>f(x) = ");
 			for(int i = 0; i < coefficients.length; i++) {
 				fnctn.append(Double.toString(coefficients[i]) + "x" + "<sup>" + Integer.toString(degree - i) + "</sup>");
@@ -322,15 +294,104 @@ public class Window extends JFrame{
 			JLabel lbl1 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f(0)));
 			panel.add(lbl1);
 			for(int i = 0; i < nullstellen.size(); i++) {
+				
 				JLabel lbl2 = new JLabel("Nullstelle:	x = " + df.format(nullstellen.get(i)));
 				panel.add(lbl2);
+				
 			}
+			
+			for(int i = 0; i < nullstellen_ableitung.size(); i++) {
+				
+				JLabel lbl3 = new JLabel("Extremum:	(" + df.format(nullstellen_ableitung.get(i)) + ", " + df.format(Graph.f(nullstellen_ableitung.get(i))) + ")");
+				panel.add(lbl3);
+				
+			}
+			
+			StringBuilder derivative1 = new StringBuilder("<html>f'(x) = ");
+			for(int i = 0; i < derivative.length; i++) {
+				
+				derivative1.append(Double.toString(derivative[i]) + "x" + "<sup>" + Integer.toString(derivative.length - i - 1) + "</sup>");
+				if(i != derivative.length - 1) {
+					
+					derivative1.append(" + ");
+					
+				} else {
+					
+					derivative1.append("</html>");
+					
+				}
+			
+			}
+
+			JLabel lb = new JLabel(derivative1.toString());
+			panel.add(lb);
+			JLabel lbl12 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f_d(0)));
+			panel.add(lbl12);
+			for(int i = 0; i < nullstellen_ableitung.size(); i++) {
+				
+				JLabel lbl2 = new JLabel("Nullstelle:	x = " + df.format(nullstellen_ableitung.get(i)));
+				panel.add(lbl2);
+				
+			}
+			
+			/*for(int i = 0; i < extremalstellen_ableitung.size(); i++) {
+				
+				JLabel lbl3 = new JLabel("Extrema:	(" + df.format(extremalstellen_ableitung.get(i)) + ", " + Graph.f(extremalstellen_ableitung.get(i)));
+				panel.add(lbl3);
+				
+			}*/
+			
+		}
+		
+		/*
+		 * 
+		 */
+		private void function_disc(JPanel panel) {
+			
+			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
+				
+				double y = Graph.f(x);
+				
+				if(Double.isNaN(y)) {
+					
+					continue;
+					
+				} else if(y < 0.00001 && y > -0.00001) {
+					if(Graph.f_d(x) < 0.00001 && Graph.f_d(x) > 0.00001) {
+						
+						if(y < 0.00000000001 && y < -0.000000000001) {
+
+							nullstelle = x;
+							nullstellen.add(Double.parseDouble(df2.format(nullstelle)));
+						
+						}
+						
+						
+					} else {
+						
+						nullstelle = x;
+						nullstellen.add(Double.parseDouble(df.format(nullstelle)));
+						
+					}
+					
+				} else if(y == 0) {
+					
+					nullstelle = x;
+					nullstellen.add(Double.parseDouble(df.format(nullstelle)));
+					
+				}
+				
+			}
+			
+			Set<Double> hs = new LinkedHashSet<>();
+			hs.addAll(nullstellen);
+			nullstellen.clear();
+			nullstellen.addAll(hs);
+			
 			
 		}
 		
 		private void derivative_disc(JPanel panel) {
-			DecimalFormat df = new DecimalFormat("#.####");
-			df.setRoundingMode(RoundingMode.CEILING);
 			
 			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
 				
@@ -358,29 +419,7 @@ public class Window extends JFrame{
 			hs.addAll(nullstellen_ableitung);
 			nullstellen_ableitung.clear();
 			nullstellen_ableitung.addAll(hs);
-			StringBuilder derivative1 = new StringBuilder("<html>f'(x) = ");
-			for(int i = 0; i < derivative.length; i++) {
-				derivative1.append(Double.toString(derivative[i]) + "x" + "<sup>" + Integer.toString(derivative.length - i) + "</sup>");
-				if(i != derivative.length - 1) {
-					
-					derivative1.append(" + ");
-					
-				} else {
-					
-					derivative1.append("</html>");
-					
-				}
 			
-			}
-
-			JLabel lb = new JLabel(derivative1.toString());
-			panel.add(lb);
-			JLabel lbl1 = new JLabel("Achsenabschnitt:	y = " + df.format(Graph.f_d(0)));
-			panel.add(lbl1);
-			for(int i = 0; i < nullstellen_ableitung.size(); i++) {
-				JLabel lbl2 = new JLabel("Nullstelle:	x = " + df.format(nullstellen_ableitung.get(i)));
-				panel.add(lbl2);
-			}
 			
 		}
 		
