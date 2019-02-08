@@ -59,7 +59,7 @@ public class Window extends JFrame{
 	
 	public static final double G_RESOLUTION		= 0.0001;
 	public static final int X_SCALE 			= 50;
-	public static final int Y_SCALE				= 5;
+	public static final int Y_SCALE				= 50;
 	
 	static int degree;
 	static double[] coefficients;
@@ -348,7 +348,7 @@ public class Window extends JFrame{
 		 */
 		private void function_disc(JPanel panel) {
 			
-			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
+			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.0001) {
 				
 				double y = Graph.f(x);
 				
@@ -393,7 +393,7 @@ public class Window extends JFrame{
 		
 		private void derivative_disc(JPanel panel) {
 			
-			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.000001) {
+			for(double x = -(1000 / X_SCALE); x < 1000 / X_SCALE + 1; x += 0.0001) {
 				
 				double y = Graph.f_d(x);
 				
